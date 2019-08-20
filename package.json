@@ -1,0 +1,29 @@
+{
+  "name": "advanced-search",
+  "version": "1.0.0",
+  "description": "Parse search words.",
+  "main": "dist/advanced-search.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "examples": "webpack-dev-server --mode development --content-base examples/ --open-page index.html",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mya-zaki/advanced-search.git"
+  },
+  "keywords": [
+    "search"
+  ],
+  "author": "mya-zaki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mya-zaki/advanced-search/issues"
+  },
+  "homepage": "https://github.com/mya-zaki/advanced-search#readme",
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0"
+  }
+}
