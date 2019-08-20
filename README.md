@@ -8,7 +8,7 @@ Parse search words.
 npm run examples
 ```
 
-## search phrase syntax
+## search query syntax
 
 Separator is Half-width space or Full-width space.
 

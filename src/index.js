@@ -1,9 +1,9 @@
 "use strict";
 
-// query          = clause, { separator, [ "OR", separator ] , clause };
-// clause         = factor | phrase;
-// phrase         = [ "-" ], (paragraph | word );
-// paragraph      = '"', all characters - '"' , '"';
+// query          = sentence, { separator, [ "OR", separator ] , sentence };
+// sentence       = factor | clause;
+// clause         = [ "-" ], (phrase | word );
+// phrase         = '"', all characters - '"' , '"';
 // word           = all characters - white space
 // factor         = ( "(", query, ")" );
 // separator      = white space+;
@@ -26,17 +26,17 @@ class AdvancedSearch {
         return null;
       }
     );
-    this.paragraph = Parser.map(
+    this.phrase = Parser.map(
       Parser.seq(Parser.char('"'), Parser.regex(/[^"]+/), Parser.char('"')),
       parsed => {
         return parsed[1];
       }
     );
     this.word = Parser.regex(/[^ 　]+/);
-    this.phrase = Parser.map(
+    this.clause = Parser.map(
       Parser.seq(
         Parser.option(Parser.token("-")),
-        Parser.choice(this.paragraph, this.word)
+        Parser.choice(this.phrase, this.word)
       ),
       parsed => {
         return {
@@ -56,15 +56,15 @@ class AdvancedSearch {
         return parsed[1];
       });
     });
-    this.clause = Parser.choice(this.factor, this.phrase);
+    this.sentence = Parser.choice(this.factor, this.clause);
     this.query = Parser.map(
       Parser.seq(
-        this.clause,
+        this.sentence,
         Parser.many(
           Parser.seq(
             this.separator,
             Parser.option(Parser.seq(Parser.token("OR"), this.separator)),
-            this.clause
+            this.sentence
           )
         )
       ),
