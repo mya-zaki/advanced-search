@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Search Example</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <v-app>
+        <v-container>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field label="Search" v-model="query"></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-subheader>Parsed</v-subheader>
+              <v-sheet class="d-flex" color="grey lighten-3" min-height="100">
+                <pre>{{ parsed }}</pre>
+              </v-sheet>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"
+      integrity="sha256-lIXwkX+X/PT2Ol6jZSAP/VfxI/RROCovmhrS4v1RrJs="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      requirejs.config({
+        paths: {
+          advancedSearch: "/advanced-search"
+        }
+      });
+      requirejs(["advancedSearch"], function(advancedSearch) {
+        var app = new Vue({
+          el: "#app",
+          vuetify: new Vuetify(),
+          data: {
+            query: ""
+          },
+          computed: {
+            parsed() {
+              var result = advancedSearch.parse(this.query);
+              return JSON.stringify(result, null, 4);
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
