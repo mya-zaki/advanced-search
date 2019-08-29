@@ -6,9 +6,9 @@ import { Source } from "./source";
 // query          = sentence, { separator, [ "OR", separator ] , sentence };
 // sentence       = factor | clause;
 // clause         = [ "-" ], ( phrase | word );
-// phrase         = '"', all characters - '"' , '"';
-// word           = all characters - white space
-// factor         = ( "(", query, ")" );
+// phrase         = '"', { all characters - '"' | '""' } , '"';
+// word           = all characters - ( white space | '"' | "(" | ")" ), { { all characters - white space }, all characters - ( white space | ")" ) }
+// factor         = "(", { separator }, query, { separator }, ")";
 // separator      = white space+;
 // white space    = ? white space characters ? ;
 // all characters = ? all visible characters ? ;
@@ -27,12 +27,16 @@ export default class AdvancedSearch {
       }
     );
     this.phrase = Parser.map(
-      Parser.seq(Parser.char('"'), Parser.regex(/[^"]+/), Parser.char('"')),
+      Parser.seq(
+        Parser.token('"'),
+        Parser.regex(/([^"]|"")+/),
+        Parser.token('"')
+      ),
       parsed => {
-        return parsed[1];
+        return parsed[1].replace('""', '"');
       }
     );
-    this.word = Parser.regex(/[^ 　]+/);
+    this.word = Parser.regex(/[^ 　\"\(\)]([^ 　]*[^ 　\)])*/);
     this.clause = Parser.map(
       Parser.seq(
         Parser.option(Parser.token("-")),
@@ -48,12 +52,14 @@ export default class AdvancedSearch {
     this.factor = Parser.lazy(() => {
       const parser = Parser.seq(
         Parser.token("("),
+        Parser.option(this.separator),
         this.query,
+        Parser.option(this.separator),
         Parser.token(")")
       );
 
       return Parser.map(parser, parsed => {
-        return parsed[1];
+        return parsed[2];
       });
     });
     this.sentence = Parser.choice(this.factor, this.clause);
@@ -69,6 +75,8 @@ export default class AdvancedSearch {
         )
       ),
       parsed => {
+        console.log("--query--");
+        console.log(parsed);
         let res = [[parsed[0]]];
         let index = 0;
         for (let i = 0; i < parsed[1].length; i++) {
