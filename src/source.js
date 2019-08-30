@@ -21,7 +21,7 @@ export const Source = (function() {
   return Source;
 })();
 
-export class Result {
+export class ParseResult {
   constructor(status, match, source) {
     this.status = status;
     this.match = match;

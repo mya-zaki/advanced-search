@@ -43,10 +43,7 @@ export default class AdvancedSearch {
         Parser.choice(this.phrase, this.word)
       ),
       parsed => {
-        return {
-          not: parsed[0] === "-" ? true : false,
-          phrase: parsed[1]
-        };
+        return new Phrase(parsed[1], parsed[0] === "-");
       }
     );
     this.factor = Parser.lazy(() => {
@@ -75,20 +72,71 @@ export default class AdvancedSearch {
         )
       ),
       parsed => {
-        console.log("--query--");
-        console.log(parsed);
-        let res = [[parsed[0]]];
-        let index = 0;
+        // console.log(parsed);
+        let res = new Result(parsed[0]);
         for (let i = 0; i < parsed[1].length; i++) {
-          if (parsed[1][i][1] !== null) {
-            res.push([parsed[1][i][2]]);
-            index++;
+          if (isOrQuery(parsed[1][i][1])) {
+            res.pushOr(parsed[1][i][2]);
           } else {
-            res[index] = res[index].concat([parsed[1][i][2]]);
+            res.pushAnd(parsed[1][i][2]);
           }
         }
-        return res;
+        return res.getQuery();
       }
     );
+
+    const isOrQuery = parsed => {
+      return parsed !== null && parsed[0] === "OR";
+    };
+  }
+}
+
+class Phrase {
+  constructor(phrase, not = false) {
+    this.phrase = phrase;
+    this.not = not;
+  }
+}
+
+class Result {
+  constructor(parsed) {
+    this.tmp = [parsed];
+    this.query = [parsed];
+  }
+
+  getQuery() {
+    return { query: this.query };
+  }
+
+  pushOr(parsed) {
+    if (this.query.should) {
+      this.query.should.push(parsed);
+    } else {
+      if (this.tmp.length === 1) {
+        this.tmp = this.tmp.pop();
+      }
+      this.query = {
+        should: [this.tmp, parsed]
+      };
+    }
+    this.tmp = [parsed];
+  }
+
+  pushAnd(parsed) {
+    if (this.tmp.must) {
+      this.tmp.must.push(parsed);
+    } else {
+      this.tmp = this.tmp.pop();
+      this.tmp = {
+        must: [this.tmp, parsed]
+      };
+    }
+    if (this.query.should) {
+      this.query.should.pop();
+      this.query.should.push(this.tmp);
+    } else {
+      this.query.pop();
+      this.query.push(this.tmp);
+    }
   }
 }

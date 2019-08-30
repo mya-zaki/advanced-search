@@ -1,6 +1,6 @@
 "use strict";
 
-import { Result } from "./source";
+import { ParseResult } from "./source";
 
 export default class Parser {
   constructor(parser) {
@@ -17,9 +17,9 @@ export default class Parser {
     return new Parser(source => {
       if (source.string.substr(source.position, len) === str) {
         source.position += len;
-        return new Result(true, str, source);
+        return new ParseResult(true, str, source);
       } else {
-        return new Result(false, null, source);
+        return new ParseResult(false, null, source);
       }
     });
   }
@@ -34,9 +34,9 @@ export default class Parser {
       const char = source.string.substr(source.position, 1);
       if (dict.has(char)) {
         source.position += 1;
-        return new Result(true, char, source);
+        return new ParseResult(true, char, source);
       } else {
-        return new Result(false, null, source);
+        return new ParseResult(false, null, source);
       }
     });
   }
@@ -55,7 +55,7 @@ export default class Parser {
         }
       }
 
-      return new Result(true, results, source);
+      return new ParseResult(true, results, source);
     });
   }
 
@@ -68,7 +68,7 @@ export default class Parser {
         }
       }
 
-      return new Result(false, null, source);
+      return new ParseResult(false, null, source);
     });
   }
 
@@ -85,7 +85,7 @@ export default class Parser {
           return result;
         }
       }
-      return new Result(true, results, source);
+      return new ParseResult(true, results, source);
     });
   }
 
@@ -95,7 +95,7 @@ export default class Parser {
       if (result.status) {
         return result;
       } else {
-        return new Result(true, null, source);
+        return new ParseResult(true, null, source);
       }
     });
   }
@@ -114,9 +114,9 @@ export default class Parser {
 
       if (regexResult) {
         source.position += regexResult[0].length;
-        return new Result(true, regexResult[0], source);
+        return new ParseResult(true, regexResult[0], source);
       } else {
-        return new Result(false, null, source);
+        return new ParseResult(false, null, source);
       }
     });
   }
@@ -135,7 +135,11 @@ export default class Parser {
     return new Parser(source => {
       const result = parser.exec(source);
       if (result.status) {
-        return new Result(result.status, shape(result.match), result.source);
+        return new ParseResult(
+          result.status,
+          shape(result.match),
+          result.source
+        );
       } else {
         return result;
       }
