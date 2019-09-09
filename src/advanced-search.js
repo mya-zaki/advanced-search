@@ -43,7 +43,10 @@ export default class AdvancedSearch {
         Parser.choice(this.phrase, this.word)
       ),
       parsed => {
-        return new Phrase(parsed[1], parsed[0] === "-");
+        return {
+          phrase: parsed[1],
+          not: parsed[0] === "-" ? true : false
+        };
       }
     );
     this.factor = Parser.lazy(() => {
@@ -91,17 +94,10 @@ export default class AdvancedSearch {
   }
 }
 
-class Phrase {
-  constructor(phrase, not = false) {
-    this.phrase = phrase;
-    this.not = not;
-  }
-}
-
 class Result {
   constructor(parsed) {
     this.tmp = [parsed];
-    this.query = [parsed];
+    this.query = parsed;
   }
 
   getQuery() {
@@ -135,8 +131,7 @@ class Result {
       this.query.should.pop();
       this.query.should.push(this.tmp);
     } else {
-      this.query.pop();
-      this.query.push(this.tmp);
+      this.query = this.tmp;
     }
   }
 }
