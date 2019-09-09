@@ -4,7 +4,7 @@
   "description": "Parse search words.",
   "main": "dist/advanced-search.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "examples": "webpack-dev-server --mode development --content-base examples/ --open-page index.html",
     "build": "webpack"
   },
@@ -22,6 +22,11 @@
   },
   "homepage": "https://github.com/mya-zaki/advanced-search#readme",
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+    "@babel/preset-env": "^7.5.5",
+    "jest": "^24.9.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.8.0"
