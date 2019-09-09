@@ -1,7 +1,10 @@
 {
-  "name": "advanced-search",
+  "name": "@mya-zaki/advanced-search",
   "version": "1.0.0",
   "description": "Parse search words.",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/advanced-search.js",
   "scripts": {
     "test": "jest",
