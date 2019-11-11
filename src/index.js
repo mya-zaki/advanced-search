@@ -2,9 +2,11 @@
 
 import AdvancedSearch from "./advanced-search";
 
-export const parse = target => {
-  const as = new AdvancedSearch();
-  const result = as.exec(target);
+export default {
+  parse: target => {
+    const as = new AdvancedSearch();
+    const result = as.exec(target);
 
-  return result.match;
+    return result.match;
+  }
 };

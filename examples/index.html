@@ -63,7 +63,7 @@
           },
           computed: {
             parsed() {
-              var result = advancedSearch.parse(this.query);
+              var result = advancedSearch.default.parse(this.query);
               return JSON.stringify(result, null, 4);
             }
           }
