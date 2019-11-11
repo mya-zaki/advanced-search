@@ -69,7 +69,7 @@ test("and", () => {
 test("or", () => {
   const as = new AdvancedSearch();
 
-  expect(as.exec("foo OR bar").match).toEqual({
+  expect(as.exec("foo OR bar OR baz").match).toEqual({
     query: {
       should: [
         {
@@ -78,6 +78,10 @@ test("or", () => {
         },
         {
           phrase: "bar",
+          not: false
+        },
+        {
+          phrase: "baz",
           not: false
         }
       ]
@@ -106,6 +110,33 @@ test("and-or", () => {
         {
           phrase: "baz",
           not: true
+        }
+      ]
+    }
+  });
+});
+
+test("or-and", () => {
+  const as = new AdvancedSearch();
+
+  expect(as.exec("foo OR bar -baz").match).toEqual({
+    query: {
+      should: [
+        {
+          phrase: "foo",
+          not: false
+        },
+        {
+          must: [
+            {
+              phrase: "bar",
+              not: false
+            },
+            {
+              phrase: "baz",
+              not: true
+            }
+          ]
         }
       ]
     }
