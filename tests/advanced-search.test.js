@@ -7,7 +7,8 @@ test("single", () => {
 
   expect(as.exec("foo").match).toEqual({
     query: {
-      phrase: "foo",
+      value: "foo",
+      phrased: false,
       not: false
     }
   });
@@ -18,7 +19,8 @@ test("not", () => {
 
   expect(as.exec("-foo").match).toEqual({
     query: {
-      phrase: "foo",
+      value: "foo",
+      phrased: false,
       not: true
     }
   });
@@ -29,19 +31,22 @@ test("phrase", () => {
 
   expect(as.exec('"-foo"').match).toEqual({
     query: {
-      phrase: "-foo",
+      value: "-foo",
+      phrased: true,
       not: false
     }
   });
   expect(as.exec('"foo bar"').match).toEqual({
     query: {
-      phrase: "foo bar",
+      value: "foo bar",
+      phrased: true,
       not: false
     }
   });
   expect(as.exec('""""').match).toEqual({
     query: {
-      phrase: '"',
+      value: '"',
+      phrased: true,
       not: false
     }
   });
@@ -54,11 +59,13 @@ test("and", () => {
     query: {
       must: [
         {
-          phrase: "foo",
+          value: "foo",
+          phrased: false,
           not: false
         },
         {
-          phrase: "bar",
+          value: "bar",
+          phrased: false,
           not: false
         }
       ]
@@ -73,15 +80,18 @@ test("or", () => {
     query: {
       should: [
         {
-          phrase: "foo",
+          value: "foo",
+          phrased: false,
           not: false
         },
         {
-          phrase: "bar",
+          value: "bar",
+          phrased: false,
           not: false
         },
         {
-          phrase: "baz",
+          value: "baz",
+          phrased: false,
           not: false
         }
       ]
@@ -98,17 +108,20 @@ test("and-or", () => {
         {
           must: [
             {
-              phrase: "foo",
+              value: "foo",
+              phrased: false,
               not: false
             },
             {
-              phrase: "bar",
+              value: "bar",
+              phrased: false,
               not: false
             }
           ]
         },
         {
-          phrase: "baz",
+          value: "baz",
+          phrased: false,
           not: true
         }
       ]
@@ -123,17 +136,20 @@ test("or-and", () => {
     query: {
       should: [
         {
-          phrase: "foo",
+          value: "foo",
+          phrased: false,
           not: false
         },
         {
           must: [
             {
-              phrase: "bar",
+              value: "bar",
+              phrased: false,
               not: false
             },
             {
-              phrase: "baz",
+              value: "baz",
+              phrased: false,
               not: true
             }
           ]
@@ -150,18 +166,21 @@ test("group", () => {
     query: {
       must: [
         {
-          phrase: "foo",
+          value: "foo",
+          phrased: false,
           not: false
         },
         {
           query: {
             should: [
               {
-                phrase: "bar",
+                value: "bar",
+                phrased: false,
                 not: false
               },
               {
-                phrase: "baz",
+                value: "baz",
+                phrased: false,
                 not: false
               }
             ]
@@ -174,7 +193,8 @@ test("group", () => {
   expect(as.exec("(foo)").match).toEqual({
     query: {
       query: {
-        phrase: "foo",
+        value: "foo",
+        phrased: false,
         not: false
       }
     }
@@ -182,7 +202,8 @@ test("group", () => {
   expect(as.exec("(foo)()").match).toEqual({
     query: {
       query: {
-        phrase: "foo)(",
+        value: "foo)(",
+        phrased: false,
         not: false
       }
     }
@@ -200,22 +221,26 @@ test("multiple", () => {
     query: {
       must: [
         {
-          phrase: "Lorem",
+          value: "Lorem",
+          phrased: false,
           not: false
         },
         {
-          phrase: "ipsum",
+          value: "ipsum",
+          phrased: false,
           not: true
         },
         {
           query: {
             should: [
               {
-                phrase: "dolor",
+                value: "dolor",
+                phrased: false,
                 not: false
               },
               {
-                phrase: "sit amet",
+                value: "sit amet",
+                phrased: true,
                 not: true
               }
             ]
@@ -228,25 +253,29 @@ test("multiple", () => {
                 query: {
                   must: [
                     {
-                      phrase: "consectetur",
+                      value: "consectetur",
+                      phrased: false,
                       not: false
                     },
                     {
-                      phrase: "(adipiscing OR elit)",
+                      value: "(adipiscing OR elit)",
+                      phrased: true,
                       not: false
                     }
                   ]
                 }
               },
               {
-                phrase: "sed",
+                value: "sed",
+                phrased: false,
                 not: false
               }
             ]
           }
         },
         {
-          phrase: "do",
+          value: "do",
+          phrased: false,
           not: false
         }
       ]

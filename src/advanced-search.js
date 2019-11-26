@@ -33,20 +33,29 @@ export default class AdvancedSearch {
         Parser.token('"')
       ),
       parsed => {
-        return parsed[1].replace('""', '"');
+        return {
+          value: parsed[1].replace('""', '"'),
+          phrased: true
+        };
       }
     );
-    this.word = Parser.regex(/[^ 　\"\(\)]([^ 　]*[^ 　\)])*/);
+    this.word = Parser.map(
+      Parser.regex(/[^ 　\"\(\)]([^ 　]*[^ 　\)])*/),
+      parsed => {
+        return {
+          value: parsed,
+          phrased: false
+        };
+      }
+    );
     this.clause = Parser.map(
       Parser.seq(
         Parser.option(Parser.token("-")),
         Parser.choice(this.phrase, this.word)
       ),
       parsed => {
-        return {
-          phrase: parsed[1],
-          not: parsed[0] === "-" ? true : false
-        };
+        parsed[1].not = parsed[0] === "-" ? true : false;
+        return parsed[1];
       }
     );
     this.factor = Parser.lazy(() => {
@@ -75,7 +84,6 @@ export default class AdvancedSearch {
         )
       ),
       parsed => {
-        // console.log(parsed);
         let res = new Result(parsed[0]);
         for (let i = 0; i < parsed[1].length; i++) {
           if (isOrQuery(parsed[1][i][1])) {
