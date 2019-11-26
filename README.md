@@ -20,3 +20,12 @@ Separator is Half-width space or Full-width space.
   - Exact word or phrase.
 - ( )
   - Grouping this query.
+
+## Usage
+
+```javascript
+import AdvancedSearch from "@mya-zaki/advanced-search";
+
+// query = 'foo bar OR baz'
+const result = AdvancedSearch.parse(query);
+```
