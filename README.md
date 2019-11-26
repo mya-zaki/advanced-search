@@ -1,5 +1,7 @@
 # advanced-search
 
+[![CircleCI](https://circleci.com/gh/mya-zaki/advanced-search.svg?style=svg)](https://circleci.com/gh/mya-zaki/advanced-search)
+
 Parse search words.
 
 ## Execute examples
